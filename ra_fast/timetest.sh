@@ -123,7 +123,7 @@ echo on > $DAMON/kdamonds/0/state
 cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 echo "$!" >> /sys/fs/cgroup/cgroup.procs
 taskset -pc 13,14 $!
-sleep 240
+sleep 220
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo off > $DAMON/kdamonds/0/state
