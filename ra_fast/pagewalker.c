@@ -18,7 +18,7 @@ typedef struct pattern{
 } walk_pattern;
 
 walk_pattern patterns[PATTERN_N] = {
-  {1, 1}, {1, 2}, {1, 8}, {1, 64} 
+  {1, 1}, {1, 2}, {1, 8}, {1, 32} 
   // {
   //   .freq_order = 1 ;
   //   .size_ofder = 1 ;
