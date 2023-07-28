@@ -116,14 +116,15 @@ echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
 echo "$!" > $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
 cat  $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
 #set cpu
-taskset -pc 12 $!
+#taskset -pc 12 $!
 #turn on damon
 echo on > $DAMON/kdamonds/0/state
-
-cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
-echo "$!" >> /sys/fs/cgroup/cgroup.procs
-taskset -pc 13,14 $!
-sleep 220
+echo "now in the group are:"
+cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+#cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
+#echo "$!" >> /sys/fs/cgroup/cgroup.procs
+#taskset -pc 13,14 $!
+sleep 180
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo off > $DAMON/kdamonds/0/state

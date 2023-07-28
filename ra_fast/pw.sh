@@ -48,14 +48,14 @@ echo 0 > /sys/kernel/debug/tracing/events/swap/swap_alloc_cluster/enable
 echo 0 > /sys/kernel/debug/tracing/events/swap/scan_swap_map_slots/enable
 echo 1 > /sys/kernel/debug/tracing/events/lru_gen/folio_delete_from_swap_cache/enable
 echo 1 > /sys/kernel/debug/tracing/events/lru_gen/folio_workingset_change/enable
-echo 1 > /sys/kernel/debug/tracing/events/lru_gen/mglru_sort_folio/enable
+echo 0 > /sys/kernel/debug/tracing/events/lru_gen/mglru_sort_folio/enable
 echo 1 > /sys/kernel/debug/tracing/events/lru_gen/walk_pte_range/enable
 echo 0 > /sys/kernel/debug/tracing/events/lru_gen/mglru_isolate_folio/enable
-echo 1 > /sys/kernel/debug/tracing/events/lru_gen/damon_folio_mark_accessed/enable
+echo 0 > /sys/kernel/debug/tracing/events/lru_gen/damon_folio_mark_accessed/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/new_swap_ra_info/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/do_swap_page/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/swapin_force_wake_kswapd/enable
-echo 1 > /sys/kernel/debug/tracing/events/swap/folio_inc_refs/enable
+echo 0 > /sys/kernel/debug/tracing/events/swap/folio_inc_refs/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/readahead_swap_readpage/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/swapin_readahead_hit/enable
 echo 0 > /sys/kernel/debug/tracing/events/swap/folio_add_lru/enable
@@ -123,7 +123,7 @@ echo on > $DAMON/kdamonds/0/state
 cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 echo "$!" >> /sys/fs/cgroup/cgroup.procs
 taskset -pc 13,14 $!
-sleep 240
+sleep 40
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo off > $DAMON/kdamonds/0/state
