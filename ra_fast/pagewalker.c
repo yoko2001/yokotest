@@ -18,7 +18,7 @@ typedef struct pattern{
 } walk_pattern;
 
 walk_pattern patterns[PATTERN_N] = {
-  {1, 1}, {1, 1}, {1, 3}, {1, 4} 
+  {1, 1}, {1, 2}, {1, 3}, {1, 5} 
   // {
   //   .freq_order = 1 ;
   //   .size_ofder = 1 ;
@@ -52,11 +52,12 @@ static void access_random_pages(){
     }
 }
 int main(int argc, char* argv[]){
-    struct timeval begin, end;
+    //struct timeval begin, end;
+    struct timespec begin, end;
     srand(1234567);
 
     int walk_pagenum = 76800 , 
-      s_interval = 0, l_interval = 2, round = 30, sleeptime = 0;
+      s_interval = 0, l_interval = 2, round = 200, sleeptime = 0;
     //900 round ≈ 30min at l_interval = 2s
 
     if (argc > 1) walk_pagenum = atoi(argv[1]);//num of page to walk
@@ -108,8 +109,8 @@ int main(int argc, char* argv[]){
     }
 
     assert(bases[0] + (walk_pgnums[0] +  walk_pgnums[1] + walk_pgnums[2]) * PAGESIZE == bases[3]);
-    sleep(1);
-   
+    //sleep(10);
+    /*
     for (int r = 0; r < 100; r++){
     	for (int p = 0; p < 4; p++){  //first two goes to high ; last two goes to end
       		for (int i = 0; i < walk_pgnums[p]; i++){
@@ -121,10 +122,10 @@ int main(int argc, char* argv[]){
        		//if (p > 2) madvise(bases[p], walk_pgnums[p]*PAGESIZE, 27);
     	}
     }
+    */
     
-   /* 
     //touch & add
-    for (int r = 0; r < 3; r++){
+    for (int r = 0; r < 10; r++){
     	for (int p = 0; p < PATTERN_N; p++){  //first two goes to high ; last two goes to end
       		for (int i = 0; i < walk_pgnums[p]; i++){
         		*_page_off(bases[p], i) = (char)(i % 256);
@@ -132,13 +133,11 @@ int main(int argc, char* argv[]){
        		//if (p > 2) madvise(bases[p], walk_pgnums[p]*PAGESIZE, 27);
     	}
     }
-	return 0;
-    */
 
     //warm up ok
     //
-    gettimeofday(&begin, 0);
-    
+    //gettimeofday(&begin, 0);
+    clock_gettime(CLOCK_REALTIME, &begin);
     for (int epoch = 0; epoch < round; epoch++){
 	      printf("epoch %d \n", epoch);
         for(int pat = 0; pat < PATTERN_N; pat++){
@@ -159,10 +158,11 @@ int main(int argc, char* argv[]){
         //usleep(l_interval * 1000);
     }
     //sleep(sleeptime);
-    gettimeofday(&end, 0);
+    //gettimeofday(&end, 0);
+    clock_gettime(CLOCK_REALTIME, &end);
     long seconds = end.tv_sec - begin.tv_sec;
-    long microseconds = end.tv_usec - begin.tv_usec;
-    double elapsed = seconds + microseconds*1e-6;
+    long nanoseconds = end.tv_nsec - begin.tv_nsec;
+    double elapsed = (double)seconds + (double)nanoseconds*1e-9;
     printf("Time measured: %.3f seconds.\n", elapsed);
     return 0;
 }

@@ -109,9 +109,11 @@ echo 10000 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/aggr_us
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid 
 cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat >> startmemstat.txt
 #adding memory presure to it
+echo $$ >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+sleep 1
 ./pagewalker >> info.txt 2>&1 &
-echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
-echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
+#echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+#echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
 #set damon
 echo "$!" > $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
 cat  $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
