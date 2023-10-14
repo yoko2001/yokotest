@@ -1,4 +1,7 @@
 #!/bin/bash
+echo $$ >> /sys/fs/cgroup/cgroup.procs
+sleep 1
+cgdelete -r -g cpuset,cpu,io,memory,hugetlb,pids,rdma,misc:/yuri
 echo $$
 if [ ! -d "/sys/fs/cgroup/yuri/" ];then
 	mkdir /sys/fs/cgroup/yuri

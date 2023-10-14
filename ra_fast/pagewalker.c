@@ -18,7 +18,7 @@ typedef struct pattern{
 } walk_pattern;
 
 walk_pattern patterns[PATTERN_N] = {
-  {1, 1}, {1, 2}, {1, 3}, {1, 5} 
+  {1, 1}, {1, 2}, {1, 3}, {1, 6} 
   // {
   //   .freq_order = 1 ;
   //   .size_ofder = 1 ;
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     srand(1234567);
 
     int walk_pagenum = 76800 , 
-      s_interval = 0, l_interval = 2, round = 200, sleeptime = 0;
+      s_interval = 0, l_interval = 2, round = 150, sleeptime = 0;
     //900 round ≈ 30min at l_interval = 2s
 
     if (argc > 1) walk_pagenum = atoi(argv[1]);//num of page to walk
@@ -109,7 +109,7 @@ int main(int argc, char* argv[]){
     }
 
     assert(bases[0] + (walk_pgnums[0] +  walk_pgnums[1] + walk_pgnums[2]) * PAGESIZE == bases[3]);
-    //sleep(10);
+    sleep(10);
     /*
     for (int r = 0; r < 100; r++){
     	for (int p = 0; p < 4; p++){  //first two goes to high ; last two goes to end
@@ -125,12 +125,12 @@ int main(int argc, char* argv[]){
     */
     
     //touch & add
-    for (int r = 0; r < 10; r++){
+    for (int r = 0; r < 2; r++){
     	for (int p = 0; p < PATTERN_N; p++){  //first two goes to high ; last two goes to end
       		for (int i = 0; i < walk_pgnums[p]; i++){
         		*_page_off(bases[p], i) = (char)(i % 256);
       		}
-       		//if (p > 2) madvise(bases[p], walk_pgnums[p]*PAGESIZE, 27);
+		if (p > 2) madvise(bases[p], walk_pgnums[p]*PAGESIZE, 28);
     	}
     }
 
@@ -153,7 +153,7 @@ int main(int argc, char* argv[]){
 	      }
 	      //usleep(s_interval*10); //sleep for s_interval ms
           } 
-	  //if (pat > 2) madvise(bases[pat], walk_pgnums[pat]*PAGESIZE, 27);
+          if (pat > 2) madvise(bases[pat], walk_pgnums[pat]*PAGESIZE, 28);
         }
         //usleep(l_interval * 1000);
     }

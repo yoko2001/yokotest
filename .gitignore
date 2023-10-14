@@ -1,3 +1,6 @@
 *.txt
 *.o
 pagewalker
+*stat.txt*
+ra_fast/logs/
+*result.txt*

@@ -1,4 +1,8 @@
 #!/bin/bash
+gcc pagewalker.c -lm -O0 -o pagewalker
+./set_cgroup_128m.sh
+./ramon.sh
+
 echo $$ >> /sys/fs/cgroup/cgroup.procs
 #turn off auto hugepage allocation first
 echo madvise >> /sys/kernel/mm/transparent_hugepage/enabled
@@ -27,7 +31,6 @@ echo >> /sys/kernel/debug/tracing/set_ftrace_filter
 # #echo "swap_readpage" >>  /sys/kernel/debug/tracing/set_ftrace_filter
 # echo "try_to_inc_max_seq" >>  /sys/kernel/debug/tracing/set_ftrace_filter
 # echo "folio_add_lru" >>  /sys/kernel/debug/tracing/set_ftrace_filter
-# #echo "try_charge_memcg" >>  /sys/kernel/debug/tracing/set_ftrace_filter
 # echo "try_to_free_mem_cgroup_pages" >>  /sys/kernel/debug/tracing/set_ftrace_filter
 # echo "do_huge_pmd_anonymous_page" >>  /sys/kernel/debug/tracing/set_ftrace_filter
 # echo "do_madvise" >>  /sys/kernel/debug/tracing/set_ftrace_filter
@@ -42,7 +45,6 @@ echo 0 > /sys/kernel/debug/tracing/events/pagemap/enable
 echo 0 > /sys/kernel/debug/tracing/events/lru_gen/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/enable
 echo 1 > /sys/kernel/debug/tracing/events/swap/get_swap_pages_noswap/enable
-echo 1 > /sys/kernel/debug/tracing/events/swap/swap_stat_count/enable
 echo 0 > /sys/kernel/debug/tracing/events/swap/folio_add_to_swap/enable
 echo 0 > /sys/kernel/debug/tracing/events/swap/swap_alloc_cluster/enable
 echo 0 > /sys/kernel/debug/tracing/events/swap/scan_swap_map_slots/enable
@@ -65,12 +67,7 @@ echo 0 > /sys/kernel/debug/tracing/events/vmscan/enable
 echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_shrink_slab_start/enable
 echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_shrink_slab_end/enable
 echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_vmscan_write_folio/enable
-echo 0 > /sys/kernel/debug/tracing/events/thp/add_thp_anon_rmap/enable
-echo 0 > /sys/kernel/debug/tracing/events/thp/hm_mapcount_dec/enable
 echo 0 > /sys/kernel/debug/tracing/events/thp/hm_deferred_split/enable
-echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_ano_folio2/enable
-echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_ano_folio/enable
-echo 0 > /sys/kernel/debug/tracing/events/vmscan/try_charge_memcg/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/mm_vmscan_wakeup_kswapd/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/mm_vmscan_kswapd_wake/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/lru_gen_shrink_node/enable
@@ -78,12 +75,9 @@ echo 1 > /sys/kernel/debug/tracing/events/vmscan/evict_folios/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/should_run_aging/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/kswapd_shrink_node/enable
 
-#migrate
-echo 0 > /sys/kernel/debug/tracing/events/migrate/mapcount_dec/enable
 
 #kmem
 echo 0 > /sys/kernel/debug/tracing/events/kmem/enable
-echo 1 > /sys/kernel/debug/tracing/events/kmem/mm_page_alloc_slow/enable
 
 #trace on
 echo 0 > /sys/kernel/debug/tracing/tracing_on
@@ -107,33 +101,40 @@ echo 10000 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/aggr_us
 #do the work here
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt >> info.txt 2>&1 & 
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid 
-cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat >> startmemstat.txt
+cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat > startmemstat.txt
 #adding memory presure to it
 echo $$ >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
-sleep 1
-./pagewalker >> info.txt 2>&1 &
+echo "now in the group are:"
+cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+
+#sleep 2
+./pagewalker > info.txt 2>&1 &
 #echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
 #set damon
-echo "$!" > $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
-cat  $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
+#echo "$!" > $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
+#cat  $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
 #set perf
-perf stat -e cycles,instructions,page-faults -p $!
+#perf stat -e cycles,instructions,page-faults -p $! -o perf_result.txt
+#cat perf_result.txt
 #set cpu
 #taskset -pc 12 $!
 #turn on damon
-echo on > $DAMON/kdamonds/0/state
-echo "now in the group are:"
-cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+#echo on > $DAMON/kdamonds/0/state
+#echo $$ >> /sys/fs/cgroup/cgroup.procs
+
+#echo "now in the group are:"
+#cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 #cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 #echo "$!" >> /sys/fs/cgroup/cgroup.procs
 #taskset -pc 13,14 $!
 
-#sleep 50
+sleep 100
+ps -ef | grep pagewalker
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo off > $DAMON/kdamonds/0/state
 
-cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat >> endmemstat.txt
+cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat > endmemstat.txt
 
 #cat /sys/kernel/debug/tracing/trace >> trace_record.txt

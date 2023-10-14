@@ -66,10 +66,7 @@ echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_shrink_slab_start/enable
 echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_shrink_slab_end/enable
 echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_vmscan_write_folio/enable
 echo 0 > /sys/kernel/debug/tracing/events/thp/add_thp_anon_rmap/enable
-echo 0 > /sys/kernel/debug/tracing/events/thp/hm_mapcount_dec/enable
 echo 0 > /sys/kernel/debug/tracing/events/thp/hm_deferred_split/enable
-echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_ano_folio2/enable
-echo 0 > /sys/kernel/debug/tracing/events/vmscan/mm_ano_folio/enable
 echo 0 > /sys/kernel/debug/tracing/events/vmscan/try_charge_memcg/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/mm_vmscan_wakeup_kswapd/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/mm_vmscan_kswapd_wake/enable
@@ -77,6 +74,7 @@ echo 1 > /sys/kernel/debug/tracing/events/vmscan/lru_gen_shrink_node/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/evict_folios/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/should_run_aging/enable
 echo 1 > /sys/kernel/debug/tracing/events/vmscan/kswapd_shrink_node/enable
+echo 1 > /sys/kernel/debug/tracing/events/vmscan/shrink_many/enable
 
 #migrate
 echo 0 > /sys/kernel/debug/tracing/events/migrate/mapcount_dec/enable
@@ -109,8 +107,10 @@ echo 10000 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/aggr_us
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid 
 cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat >> startmemstat.txt
 #adding memory presure to it
+echo "$$" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+sleep 3
 ./pagewalker >> info.txt 2>&1 &
-echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+#echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
 #set damon
 echo "$!" > $DAMON/kdamonds/0/contexts/0/targets/0/pid_target
@@ -123,7 +123,7 @@ echo on > $DAMON/kdamonds/0/state
 cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 echo "$!" >> /sys/fs/cgroup/cgroup.procs
 taskset -pc 13,14 $!
-sleep 40
+sleep 200
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo off > $DAMON/kdamonds/0/state
