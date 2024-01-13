@@ -5,7 +5,8 @@ gcc pagewalker.c -lm -O0 -o pagewalker
 
 echo $$ >> /sys/fs/cgroup/cgroup.procs
 #turn off auto hugepage allocation first
-echo madvise >> /sys/kernel/mm/transparent_hugepage/enabled
+# echo madvise >> /sys/kernel/mm/transparent_hugepage/enabled
+echo never >> /sys/kernel/mm/transparent_hugepage/enabled
 
 #turn off trace first
 echo 0 > /sys/kernel/debug/tracing/tracing_on
@@ -118,7 +119,7 @@ cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 #perf stat -e cycles,instructions,page-faults -p $! -o perf_result.txt
 #cat perf_result.txt
 #set cpu
-#taskset -pc 12 $!
+taskset -pc 12 $!
 #turn on damon
 #echo on > $DAMON/kdamonds/0/state
 #echo $$ >> /sys/fs/cgroup/cgroup.procs
@@ -129,7 +130,7 @@ cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 #echo "$!" >> /sys/fs/cgroup/cgroup.procs
 #taskset -pc 13,14 $!
 
-sleep 100
+sleep 1000
 ps -ef | grep pagewalker
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 echo 0 > /sys/kernel/debug/tracing/tracing_on

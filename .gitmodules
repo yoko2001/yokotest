@@ -1,0 +1,3 @@
+[submodule "/home/yuri/yokotest/kmeans"]
+	path = /home/yuri/yokotest/kmeans
+	url = git@github.com:yoko2001/kmeans-clustering-cpp.git

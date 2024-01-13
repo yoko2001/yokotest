@@ -1,5 +1,6 @@
 #!/bin/bash
-
+swapoff /dev/dm-1
+swapon -p 100 /dev/dm-1
 modprobe brd rd_nr=1 rd_size=$((64 * 1024))
 swapoff /dev/ram0
 

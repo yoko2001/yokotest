@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     srand(1234567);
 
     int walk_pagenum = 76800 , 
-      s_interval = 0, l_interval = 2, round = 150, sleeptime = 0;
+      s_interval = 0, l_interval = 2, round = 75, sleeptime = 0;
     //900 round ≈ 30min at l_interval = 2s
 
     if (argc > 1) walk_pagenum = atoi(argv[1]);//num of page to walk
@@ -146,7 +146,7 @@ int main(int argc, char* argv[]){
           for (int i = 0; i < walk_pgnums[pat]; i++){
               if (!(i % 8)) access_random_pages();
 	      //if (rand()%100 < 10) continue;
-	      for (int ext = 2; ext < 4; ext++){
+	      for (int ext = 2; ext < 3; ext++){
 	      	for (int in = 0; in < PAGESIZE; in+=jump){
                	  *(_page_off(bases[pat], i) + in) = (char)(((i + in)% 256) * ext % 256);
               	}
