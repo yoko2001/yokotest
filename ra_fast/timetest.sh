@@ -3,6 +3,8 @@ gcc pagewalker.c -lm -O0 -g -o pagewalker
 ./set_cgroup_128m.sh
 ./ramon.sh
 
+rm ./endmemstat.txt
+
 echo $$ >> /sys/fs/cgroup/cgroup.procs
 #turn off auto hugepage allocation first
 # echo madvise >> /sys/kernel/mm/transparent_hugepage/enabled
@@ -111,7 +113,7 @@ rm info.txt
 #sleep 2
 ./pagewalker > info.txt 2>&1 &
 pagewalker_pid=$!
-taskset -pc 12 "$pagewalker_pid"
+#taskset -pc 12 "$pagewalker_pid"
 
 #echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
@@ -122,8 +124,8 @@ taskset -pc 12 "$pagewalker_pid"
 #perf stat -e cycles,instructions,page-faults -p $! -o perf_result.txt
 #cat perf_result.txt
 #set cpu
-kswapd_pid=$(pgrep kswapd)
-taskset -cp 13,14 "$kswapd_pid"
+#kswapd_pid=$(pgrep kswapd)
+#taskset -cp 13,14 "$kswapd_pid"
 echo "已将kswapd进程(PID: $kswapd_pid)限制为在CPU 12上运行"
 #turn on damon
 #echo on > $DAMON/kdamonds/0/state
@@ -134,8 +136,8 @@ echo "已将kswapd进程(PID: $kswapd_pid)限制为在CPU 12上运行"
 #cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 #echo "$!" >> /sys/fs/cgroup/cgroup.procs
 #taskset -pc 13,14 $!
-perf record -g -p ${pagewalker_pid}
-#sleep 60
+#perf record -g -p ${pagewalker_pid}
+sleep 300
 #ps -ef | grep pagewalker
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 #echo 0 > /sys/kernel/debug/tracing/tracing_on

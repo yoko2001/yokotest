@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     srand(1234567);
 
     int walk_pagenum = 76800 , 
-      s_interval = 0, l_interval = 2, round = 75, sleeptime = 0;
+      s_interval = 0, l_interval = 2, round = 50, sleeptime = 0;
     //900 round ≈ 30min at l_interval = 2s
 
     if (argc > 1) walk_pagenum = atoi(argv[1]);//num of page to walk
@@ -96,12 +96,13 @@ int main(int argc, char* argv[]){
 		round, l_interval * 1000, s_interval);
 
     //malloc
-    //char* base = (char*)malloc(PAGESIZE * walk_pagenum);
-    void* base;
+    char* base = (char*)malloc(PAGESIZE * walk_pagenum);
+	//void* base;
 
 //    posix_memalign(&base,HUGEPAGESIZE, PAGESIZE * walk_pagenum);
     
-    posix_memalign(&base,PAGESIZE, PAGESIZE * walk_pagenum);
+    
+    //posix_memalign(&base,PAGESIZE, PAGESIZE * walk_pagenum);
     //char* bases[PATTERN_N];
     bases[0] = (char*)base;
     for(int i = 1; i < PATTERN_N; i++){
