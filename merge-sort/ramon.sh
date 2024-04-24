@@ -1,10 +1,6 @@
 #!/bin/bash
-swapoff /dev/dm-1
-<<<<<<< HEAD
-swapon -p 100 /dev/dm-1
-=======
-swapon -p 10 /dev/dm-1
->>>>>>> 629970e (reshape git tree)
+swapoff /dev/nvme0n1
+swapon -p 10 /dev/nvme0n1
 modprobe brd rd_nr=1 rd_size=$((64 * 1024))
 swapoff /dev/ram0
 

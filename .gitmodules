@@ -4,3 +4,6 @@
 [submodule "cpp-sort"]
 	path = cpp-sort
 	url = https://github.com/yoko2001/cpp-sort.git
+[submodule "SORT_BENCH"]
+	path = SORT_BENCH
+	url = https://github.com/travisdowns/sort-bench.git

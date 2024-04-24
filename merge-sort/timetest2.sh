@@ -1,8 +1,8 @@
 #!/bin/bash
-gcc pagewalker.c -lm -O0 -g -o pagewalker
+g++ sort.cpp -O0 -o sort
 ./set_cgroup_128m.sh
-./ramon.sh
-rm ./endmemstat.txt
+./zramon.sh
+sudo swapoff /dev/zram0
 
 echo $$ >> /sys/fs/cgroup/cgroup.procs
 #turn off auto hugepage allocation first
@@ -82,7 +82,7 @@ echo 1 > /sys/kernel/debug/tracing/events/vmscan/kswapd_shrink_node/enable
 echo 0 > /sys/kernel/debug/tracing/events/kmem/enable
 
 #trace on
-#echo 0 > /sys/kernel/debug/tracing/tracing_on
+echo 0 > /sys/kernel/debug/tracing/tracing_on
 
 #damon set
 DAMON="/sys/kernel/mm/damon/admin"
@@ -99,20 +99,19 @@ echo 100 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/sample_us
 echo 10000 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/aggr_us
 
 
-rm info.txt
+
 #do the work here
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt >> info.txt 2>&1 & 
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid 
-cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat > startmemstat.txt
+cat /sys/fs/cgroup/yuri/merge_sort/memory.stat > startmemstat.txt
 #adding memory presure to it
-echo $$ >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
+echo $$ >> /sys/fs/cgroup/yuri/merge_sort/cgroup.procs
 echo "now in the group are:"
-cat /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
-rm info.txt
+cat /sys/fs/cgroup/yuri/merge_sort/cgroup.procs
+
 #sleep 2
-./pagewalker > info.txt 2>&1 &
-pagewalker_pid=$!
-#taskset -pc 12 "$pagewalker_pid"
+# sudo fio --name=test --filename=/dev/nvme0n1 --ioengine=libaio --direct=1 --rw=read --bs=1M --numjobs=1 --size=1G --runtime=30 --time_based
+./sort > info.txt 2>&1 &
 
 #echo "$!" >> /sys/fs/cgroup/yuri/pagerank_150M/cgroup.procs
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid
@@ -123,9 +122,7 @@ pagewalker_pid=$!
 #perf stat -e cycles,instructions,page-faults -p $! -o perf_result.txt
 #cat perf_result.txt
 #set cpu
-#kswapd_pid=$(pgrep kswapd)
-#taskset -cp 13,14 "$kswapd_pid"
-echo "已将kswapd进程(PID: $kswapd_pid)限制为在CPU 12上运行"
+taskset -pc 6 $!
 #turn on damon
 #echo on > $DAMON/kdamonds/0/state
 #echo $$ >> /sys/fs/cgroup/cgroup.procs
@@ -135,13 +132,13 @@ echo "已将kswapd进程(PID: $kswapd_pid)限制为在CPU 12上运行"
 #cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 #echo "$!" >> /sys/fs/cgroup/cgroup.procs
 #taskset -pc 13,14 $!
-#perf record -g -p ${pagewalker_pid}
-sleep 300
-#ps -ef | grep pagewalker
-#./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
-#echo 0 > /sys/kernel/debug/tracing/tracing_on
-#echo off > $DAMON/kdamonds/0/state
 
-cat /sys/fs/cgroup/yuri/pagerank_150M/memory.stat > endmemstat.txt
+sleep 50
+ps -ef | grep sort
+#./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
+echo 0 > /sys/kernel/debug/tracing/tracing_on
+echo off > $DAMON/kdamonds/0/state
+
+cat /sys/fs/cgroup/yuri/merge_sort/memory.stat > endmemstat.txt
 
 #cat /sys/kernel/debug/tracing/trace >> trace_record.txt

@@ -41,7 +41,7 @@ int walk_pgnums[PATTERN_N], walk_freqs[PATTERN_N], walk_pgnum_tot = 0;
 const int jump = 256;
 static void access_random_pages(){
     int trigger = rand() % 100;
-    if (trigger < 70) return; //posibility is 0.3
+    if (trigger < 80) return; //posibility is 0.3
     int pat = rand() % PATTERN_N;
     int numpage = rand() % 32;
     int offset =rand()% ( walk_pgnums[pat] - numpage );
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     srand(1234567);
 
     int walk_pagenum = 76800 , 
-      s_interval = 0, l_interval = 2, round = 50, sleeptime = 0;
+      s_interval = 0, l_interval = 2, round = 200, sleeptime = 0;
     //900 round ≈ 30min at l_interval = 2s
 
     if (argc > 1) walk_pagenum = atoi(argv[1]);//num of page to walk

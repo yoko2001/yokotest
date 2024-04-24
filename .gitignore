@@ -5,3 +5,5 @@ pagewalker
 ra_fast/logs/
 *result.txt*
 *perf.data*
+info.txt.*
+*.txt

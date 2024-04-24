@@ -1,6 +1,6 @@
 #!/bin/bash
 gcc pagewalker.c -lm -O0 -g -o pagewalker
-./set_cgroup_128m.sh
+./set_cgroup_132m.sh
 ./ramon.sh
 rm ./endmemstat.txt
 
@@ -99,7 +99,7 @@ echo 100 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/sample_us
 echo 10000 >  $DAMON/kdamonds/0/contexts/0/monitoring_attrs/intervals/aggr_us
 
 
-rm info.txt
+
 #do the work here
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt >> info.txt 2>&1 & 
 #echo "$!" >> /sys/kernel/debug/tracing/set_ftrace_pid 
@@ -136,7 +136,7 @@ echo "已将kswapd进程(PID: $kswapd_pid)限制为在CPU 12上运行"
 #echo "$!" >> /sys/fs/cgroup/cgroup.procs
 #taskset -pc 13,14 $!
 #perf record -g -p ${pagewalker_pid}
-sleep 300
+sleep 120
 #ps -ef | grep pagewalker
 #./cpp/pagerank -d "-" ./3rddataset/PR-dataset/web-BerkStan.txt &
 #echo 0 > /sys/kernel/debug/tracing/tracing_on
