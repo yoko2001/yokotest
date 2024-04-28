@@ -20,7 +20,7 @@ fi
 # sudo mount -t cgroup -o blkio none /sys/fs/cgroup/yuri/merge_sort
 # mount -t cgroup -o memory,blkio merge_sort /sys/fs/cgroup/yuri/merge_sort
 
-echo 160487832 > /sys/fs/cgroup/yuri/merge_sort/memory.max
+echo $((314572800*2)) > /sys/fs/cgroup/yuri/merge_sort/memory.max
 echo "set memory.max to"
 cat /sys/fs/cgroup/yuri/merge_sort/memory.max
 # echo "259:0 rbps=52428800" > /sys/fs/cgroup/yuri/merge_sort/io.max
