@@ -18,7 +18,7 @@ sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_record_p.txt &
 ./sort > info.txt 2>&1 &
 sleep 1
 
-sleep 50
+sleep 55
 #end
 sudo sh -c "echo $$ >> /sys/fs/cgroup/cgroup.procs"
 reset

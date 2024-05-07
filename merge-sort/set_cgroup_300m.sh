@@ -23,7 +23,7 @@ fi
 echo $((314572800)) > /sys/fs/cgroup/yuri/merge_sort/memory.max
 echo "set memory.max to"
 cat /sys/fs/cgroup/yuri/merge_sort/memory.max
-# echo "259:0 rbps=52428800" > /sys/fs/cgroup/yuri/merge_sort/io.max
+echo "253:1 rbps=104857600" > /sys/fs/cgroup/yuri/merge_sort/io.max
 # echo "8:0 524288000" | sudo tee /sys/fs/cgroup/yuri/merge_sort/io.max
 
 echo "set io.max to"

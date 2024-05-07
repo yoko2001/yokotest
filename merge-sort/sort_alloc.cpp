@@ -67,37 +67,44 @@ void merge(int* array, int left, int middle, int right, int* swap) {
 
 void mergeSort(int* array, int left, int right, int* swap) {
     bool usemad = false;
-    if (right - left > 20) {
+    if (right - left > 50) {
         int middle = left + (right - left) / 2;
 #ifdef __USE_MADVISE__
-        if (right - left > 2e8) 
+        if (right - left > 1e8) 
             usemad = true;
 #endif
         if (usemad){
             int _start = (middle / 1024) * 1024;
-            if (madvise((array + _start), ((right - middle) * 1 / PAGESIZE) * PAGESIZE, 27)){
+            if (madvise((array + _start), ((right - middle) * 4 / PAGESIZE) * PAGESIZE, 27)){
                 exit(-1);
             }
         }
         mergeSort(array, left, middle, swap);
         if (usemad){
             int _start = (left / 1024) * 1024;
-            if (madvise(array + _start ,  ((middle - left) * 1 / PAGESIZE) * PAGESIZE, 27)){
+            if (madvise(array + _start ,  ((middle - left) * 4 / PAGESIZE) * PAGESIZE, 27)){
                 exit(-1);
             }
             _start = (middle / 1024) * 1024;
-            if (madvise((array + _start), ((right - middle) * 1 / PAGESIZE) * PAGESIZE, 26)){
+            if (madvise((array + _start), ((right - middle) * 4 / PAGESIZE) * PAGESIZE, 26)){
                 exit(-1);
             }
         }
         mergeSort(array, middle + 1, right, swap);
         if (usemad){
             int _start = (left / 1024) * 1024;
-            if (madvise(array + _start ,  ((middle - left) * 1 / PAGESIZE) * PAGESIZE, 26)){
+            if (madvise(array + _start ,  ((middle - left) * 4 / PAGESIZE) * PAGESIZE, 26)){
                 exit(-1);
             }
         }
         merge(array, left, middle, right, swap);
+#ifdef __USE_MADVISE__
+        if (usemad){
+            if (madvise(swap + left ,  ((middle - left) * 4 / PAGESIZE) * PAGESIZE, 27)){
+                exit(-1);
+            }            
+        }
+#endif
     }
     else {
         sort(array + left, array+right+1);
@@ -121,8 +128,9 @@ int main()
     for (int i = 0; i < array_size / 2; i++){
         swap_array[i] = 0;
     }
+    // _start = ((array_size / 4) / PAGESIZE) * PAGESIZE;
 #ifdef __USE_MADVISE__
-    _start = 0;//((array_size / 4) / PAGESIZE) * PAGESIZE;
+    _start = 0;
     if (madvise(swap_array + _start ,  ((array_size) * 2 / PAGESIZE) * PAGESIZE, 27)){
         exit(-1);
     }

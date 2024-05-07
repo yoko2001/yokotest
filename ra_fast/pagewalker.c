@@ -96,13 +96,13 @@ int main(int argc, char* argv[]){
 		round, l_interval * 1000, s_interval);
 
     //malloc
-    char* base = (char*)malloc(PAGESIZE * walk_pagenum);
-	//void* base;
+    // char* base = (char*)malloc(PAGESIZE * walk_pagenum);
+	void* base;
 
 //    posix_memalign(&base,HUGEPAGESIZE, PAGESIZE * walk_pagenum);
     
     
-    //posix_memalign(&base,PAGESIZE, PAGESIZE * walk_pagenum);
+    posix_memalign(&base,PAGESIZE, PAGESIZE * walk_pagenum);
     //char* bases[PATTERN_N];
     bases[0] = (char*)base;
     for(int i = 1; i < PATTERN_N; i++){
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
       		for (int i = 0; i < walk_pgnums[p]; i++){
         		*_page_off(bases[p], i) = (char)(i % 256);
       		}
-		if (p > 2) madvise(bases[p], walk_pgnums[p]*PAGESIZE, 28);
+		    if (p > 2) madvise(bases[p], walk_pgnums[p]*PAGESIZE, 27);
     	}
     }
 
